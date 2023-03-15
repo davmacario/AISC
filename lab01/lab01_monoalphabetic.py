@@ -1,5 +1,5 @@
 import numpy as np
-from AISC_01 import monogram_ranking, digram_ranking, trigram_ranking, crypto_freq, ENGLISH_LETTER_FREQS
+from AISC_01 import monogram_ranking, digram_ranking, trigram_ranking, substitute_decrypt, ENGLISH_LETTER_FREQS
 
 if __name__ == "__main__":
     """ 
@@ -33,13 +33,18 @@ if __name__ == "__main__":
     my_guess = my_guess.replace('E', 'y').replace('R', 'f').replace('C', 'b')
     my_guess = my_guess.replace('B', 'j').replace('O', 'z')
 
-    #print(my_guess)
-    #print('\n')
+    key = 'YCGSIRNWXBJAQKLVTPDMFUHXEO'
+    key_list = [c for c in key]
 
     my_guess_2 = ''.join(x if x.islower() else '-' if x.isupper() else x for x in my_guess)
 
-    print(my_guess_2)
+    #print(my_guess_2)
+
+    decrypt = substitute_decrypt(cryptogram, key_list)
+
+    print(decrypt)
 
     out_file = 'message01.txt'
     with open(out_file, 'w') as f:
-        f.write(my_guess_2)
+        f.write(decrypt)
+        f.close()

@@ -11,7 +11,11 @@ def substitute_encrypt(message, key):
     return ''.join(cryptogram)
     
 def substitute_decrypt(cryptogram, key):
-    """Decrypt cryptogram using character substitution. Key is a random permutation of the 26 letters"""
+    """
+    Decrypt cryptogram using character substitution. Key is a random permutation of the 26 letters
+    
+    key is a list of character in the position corresponding to the letter they substitute
+    """
     # map cryptogram to numerical array in range(0,26)
     cipher = [x - ord('A') for x in map(ord,cryptogram)]
     # compute inverse permutation
