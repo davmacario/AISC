@@ -1,0 +1,121 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}   % Change color and style of \ref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+}
+
+\usepackage{graphicx} % Allows you to insert figures
+\graphicspath{ {./images/} } % images are found in this position
+\counterwithin{figure}{section} % Settings for figure numbering
+\counterwithin{figure}{subsection}
+
+\usepackage{amsmath} % Allows you to do equations
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+\usepackage{amsfonts} % Contains math. symbols fonts (e.g., "real numbers" set)
+\usepackage{fancyhdr} % Formats the header
+\usepackage{geometry} % Formats the paper size, orientation, and margins
+\linespread{1.25} % about 1.5 spacing in Word
+\setlength{\parindent}{0pt} % no paragraph indents
+\setlength{\parskip}{1em} % paragraphs separated by one line
+
+\usepackage{enumitem} % Used to reduce whitespace between list elements
+\setlist[itemize]{noitemsep, topsep=0pt} % Set the whitespace above list to the minimum
+
+\usepackage[format=plain,
+            font=it]{caption} % Italicizes figure captions
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\renewcommand{\headrulewidth}{0pt}
+\geometry{letterpaper, portrait, margin=1in}
+\setlength{\headheight}{14.49998pt}
+
+\newcommand\titleofdoc{Laboratory 1 - AISC} %%%%% Title
+\newcommand\GroupName{members} %%%%% Put your group name here. If you are the only member of the group, just put your name
+\newcommand\CurrDate{March 15\textsuperscript{th}, 2023}
+
+\begin{document}
+\begin{titlepage}
+   \begin{center}
+        \vspace*{4cm} % Adjust spacings to ensure the title page is generally filled with text
+
+        \Huge{\titleofdoc} 
+
+        \vspace{0.5cm}
+        \LARGE{Breaking classical encryption schemes}
+            
+        \vspace{3 cm}
+        \Large{\GroupName\\}
+       
+       
+        \vspace{2 cm} % Optional additional info here
+       
+       
+        \vspace{3 cm}
+        \Large{\CurrDate}
+        
+        \vspace{0.25 cm}
+        \Large{A.Y. 2021-2022}
+       
+
+       \vfill
+    \end{center}
+\end{titlepage}
+
+\setcounter{page}{2}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{\GroupName; \titleofdoc}
+
+\section{Introduction} % If you want numbered sections, remove the star after \section
+
+To be filled
+
+\section{Exercise 1 - Monoalphabetic cipher}
+
+
+
+\section{Exercise 2 - Vigenère cipher}
+
+The Vigenère is an encryption scheme based on the use of a key $k$ of length $m$ to encrypt the plaintext $p$ as follows:
+
+\begin{equation*}
+  c_i = E(p,k) = (p_i + k_{i\mod{m}})\mod{26}
+\end{equation*}
+
+This means that letters at distance $m$ are shifted by the same amount, as in a generic Caesar's cipher.
+As a consequence, a possible approach for cryptanalysis can be that of looking at the ciphertext as a set of subsequences obtained by considering letters at distance $m$ of the cipher. 
+Then, it is possible to act on these subsequences by analyzing letter frequencies. In this case, a brute force approach would be time consuming as the subsequences do not contain english words, but rather (pseudo-)random letters. 
+In any case the frequency analysis is feasible, since these letters are extracted from an (encrypted) English text.
+
+The cracking mechanism is that of trying evaluating the circular correlation of the letters in each subsequence with the theoretical vector of letter densities for the English language.
+This, however requires to estimate the length of the key, and to achieve this another previous step is needed.
+
+The estimate of the key length is done once again by extracting information from the ciphertext, once again revealing the main disadvantage of this encryption scheme.
+Indeed, it is possible to evaluate a score, corresponding to the sum of squared frequencies of each letter for different subsequences lengths.
+Each language has a specific value for this score, which, in the case of English is 0.065.
+
+By comparing the scores as functions of $m$, it is possible to find out the best value for the key length as the one for which the score is closest to 0.065.
+
+In the case of the ciphertext found in document `cryptogram02.txt', the estimated key length was 15 and the key was found to be ``nowyouseethekey''.
+
+\subsection{Complexity of the algorithm}
+
+The complexity of the algorithm for breaking the Vigenère cipher can be estimated as:
+
+%
+
+
+\section{Conclusions}
+
+
+\pagebreak
+
+\end{document}
