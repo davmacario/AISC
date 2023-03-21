@@ -121,8 +121,7 @@ def crypto_freq(cryptogram):
     # return relative frequency
     return freq[0] / len(cipher)
     
-    
-    
+   
 def periodic_corr(x, y):
     """Periodic correlation, implemented using the FFT. x and y must be real sequences with the same length."""
     return np.fft.ifft(np.fft.fft(x) * np.fft.fft(y).conj()).real
