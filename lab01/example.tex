@@ -95,10 +95,11 @@ As a consequence, a possible approach for cryptanalysis can be that of looking a
 Then, it is possible to act on these subsequences by analyzing letter frequencies. In this case, a brute force approach would be time consuming as the subsequences do not contain english words, but rather (pseudo-)random letters. 
 In any case the frequency analysis is feasible, since these letters are extracted from an (encrypted) English text.
 
-The cracking mechanism is that of trying evaluating the circular correlation of the letters in each subsequence with the theoretical vector of letter densities for the English language.
+The cracking mechanism is based on evaluating the circular correlation between the letters in each subsequence and the theoretical vector of letter densities for the English language. 
+By finding the maximum of the correlation it is possible to choose the key character for the current subsequence, as this point will correspond to the shift value which makes the letter frequencies of the subsequence match with the theoretical frequencies.
 This, however requires to estimate the length of the key, and to achieve this another previous step is needed.
 
-The estimate of the key length is done once again by extracting information from the ciphertext, once again revealing the main disadvantage of this encryption scheme.
+The estimate of the key length is done by extracting information from the ciphertext, once again revealing the main disadvantage of this encryption scheme.
 Indeed, it is possible to evaluate a score, corresponding to the sum of squared frequencies of each letter for different subsequences lengths.
 Each language has a specific value for this score, which, in the case of English is 0.065.
 

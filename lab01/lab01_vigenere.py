@@ -112,8 +112,3 @@ if __name__ == "__main__":
     with open(out_file, 'w') as f:
         f.write(decr_msg)
         f.close()
-
-
-
-
-
