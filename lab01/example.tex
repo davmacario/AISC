@@ -86,22 +86,26 @@ To be filled
 
 The Vigenère is an encryption scheme based on the use of a key $k$ of length $m$ to encrypt the plaintext $p$ as follows:
 
-\begin{equation*}
+\begin{equation}
   c_i = E(p,k) = (p_i + k_{i\mod{m}})\mod{26}
-\end{equation*}
+\end{equation}
 
 This means that letters at distance $m$ are shifted by the same amount, as in a generic Caesar's cipher.
 As a consequence, a possible approach for cryptanalysis can be that of looking at the ciphertext as a set of subsequences obtained by considering letters at distance $m$ of the cipher. 
 Then, it is possible to act on these subsequences by analyzing letter frequencies. In this case, a brute force approach would be time consuming as the subsequences do not contain english words, but rather (pseudo-)random letters. 
 In any case the frequency analysis is feasible, since these letters are extracted from an (encrypted) English text.
 
-The cracking mechanism is based on evaluating the circular correlation between the letters in each subsequence and the theoretical vector of letter densities for the English language. 
-By finding the maximum of the correlation it is possible to choose the key character for the current subsequence, as this point will correspond to the shift value which makes the letter frequencies of the subsequence match with the theoretical frequencies.
+The cracking mechanism is based on evaluating the circular correlation between the letter frequencies in each subsequence and the theoretical vector of letter densities for the English language. 
+By finding the maximum of the correlation it is possible to choose the key character for the current subsequence, as this character will correspond to the shift value which makes the letter frequencies of the subsequence match with the theoretical frequencies.
 This, however requires to estimate the length of the key, and to achieve this another previous step is needed.
 
 The estimate of the key length is done by extracting information from the ciphertext, once again revealing the main disadvantage of this encryption scheme.
-Indeed, it is possible to evaluate a score, corresponding to the sum of squared frequencies of each letter for different subsequences lengths.
+Indeed, having selected a possible key length ($m$) and extracted the subsequences of letters having the same distance ($m$ sequences), it is possible to evaluate a score on each set, corresponding to the sum of squared frequencies of each letter in different subsequences.
 Each language has a specific value for this score, which, in the case of English is 0.065.
+
+In this case, the overall score was evaluated as an average of the individual scores of each subsequence.
+
+It is important to notice, however, that since the key length is not always a divisor of the total number of characters in the ciphertext, for some values of $m$, the generated subsequences may not be of the same length. As a consequence, by evaluating the scores and averaging them, the shorter sequences will introduce more noise than the longer ones. To solve this issue, which causes bad (biased) estimations of the score, it is necessary to truncate longer sequences.
 
 By comparing the scores as functions of $m$, it is possible to find out the best value for the key length as the one for which the score is closest to 0.065.
 
@@ -109,9 +113,44 @@ In the case of the ciphertext found in document `cryptogram02.txt', the estimate
 
 \subsection{Complexity of the algorithm}
 
-The complexity of the algorithm for breaking the Vigenère cipher can be estimated as:
+In order to analyze how complex it is to break the Vigenère cipher, it is possible to evaluate the complexity of the whole procedure as a function of the (maximum) key length.
 
-%
+To be able to extract good statistical information from the subsequences to evaluate the letter densities used in the cracking procedure, a good compromise is that to force the subsequences to contain at least 100 characters. This means that the maximum key length which is tried is:
+
+\begin{equation}
+  m_{max} = \left\lfloor \frac{len(c)}{100} \right\rfloor
+\end{equation}
+
+The algorithm used to break the cipher was composed of two parts: first the key length estimation, then the actual key evaluation.
+
+The second part only marginally depends on the key length. Indeed, the algorithm consists in extracting the subsequences (which is a linear operation in the length of the key) and on evaluating the letter frequencies for each, which has a cost depending on the total number of letters in the ciphertext and on the alphabet, hence independent on the key length.
+Last, what is done is the circular correlation, which again has a complexity only depending on the number of letters of the alphabet (the correlated sequences have as many elements as the alphabet). Lastly, also the search for the maximum is linear in the number of alphabet letters.
+The computational cost of this operation with respect to the maximum key length is therefore $O(n)$.
+
+The estimation of the key length instead is quadratic in the maximum key length (in our implementation).
+The steps require an iteration on all the possible key lengths and, for each value of $m$, the extraction of the subsequences and the evaluation of the score on each, before carrying out the average and possibly selecting a new best value of $m$.
+As a consequence, the complexity is equivalent to performing a constant number of operations within two nested for loops having a number of iterations proportional to the maximum key length.
+
+\subsection{Comparison with monoalphabetic cipher}
+
+While in the monoalphabetic cipher each letter was mapped to another arbitrary letter, without a rotation of the alphabet as in the (generic) Caesar cipher, the subsequences in Vigenère's cipher are in fact examples of Caesar ciphers, as the letters of each subset have been ``rotated'' by a constant amount corresponding to the associated character in the cryptographic key.
+
+As a consequence, to break the Vigenère cipher it is possible to perform an effective frequency analysis on the single subsequences, in the same way as for breaking a Caesar cipher, and this operation has to simply be repeated by a number of times equal to the key length.
+
+In the monoalphabetic cipher, instead, the absence of a constant shift makes it more tricky to come up with a decryption as a lot of trial and error is needed and it is more difficult to find a systematic approach.
+
+\section{Bonus question (1)}
+
+By feeding the text file `cryptogram03.txt' to the program developed for breaking the Vigenère cipher, which was intentionally written in the most general form possible, it has been observed that the ciphertext was indeed a result of that encryption technique, using the 21-letter key: ``thiskeyisreallysecure''.
+
+\section{Breaking stream cipher}
+
+The stream cipher can be described as a `one-time pad' in which the random key has been replaced by a pseudorandom one. \
+In the same way as the one-time pad, the stream cipher is secure (computationally, in this case) provided that the key is not reused for multiple messages.
+
+Indeed, an attacker who can observe multiple messages encrypted with the same key finds himself in the same condition of an eavesdropper trying to crack a Vigenère cipher. By appending all the different messages into a single one, one can notice that the created ciphertext is composed of different sections encrypted by the same key.
+
+The approach proposed in this laboratory can be a viable solution to break this cipher in the case of multiple messages using the same key.
 
 \section{Conclusions}
 
