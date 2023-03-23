@@ -80,6 +80,26 @@ To be filled
 
 \section{Exercise 1 - Monoalphabetic cipher}
 
+The monoalphabetic cipher is an encryption algorithm based on the use of a key which is a random permutation of the alphabet that allows a one-to-one mapping of the characters of the plaintext to the ones of the encrypted message. To break the cipher we used the following strategy.
+
+At first, we considered the first ten most common trigrams, digrams, and monograms. We report them below. Our first assumption was that the trigram “MWI”, being the most common, was the encryption of the trigram “the”. This assumption was supported by the fact that the diagrams “th” and “he” are the most common in the English language and the trigram “the” is composed of them, analogously in our encrypted message the most common trigram is “MWI” and the two most commons digrams were “MW” and “WI”  which compose the trigram. Also in English  “e” is the most common letter as “I” is in our encrypted message.
+
+We then assumed that “YKS” and “XKN” – respectively third and second most common trigrams- should be respectively “and ” and “ing”. This is supported by the fact that the decrypted trigrams share the same middle letter as the encrypted trigrams do. Moreover “in” is one of the most common diagrams and it is the beginning of “ing”, analogously “XK” is among the most common digrams in the encrypted message.
+
+The sixth most common trigram is “IPI” in our encrypted message. Our assumptions show that its partial decryption is “ePe”. Among the most common trigrams, the only one to match this structure is “ere” so we assumed that “P” encrypts “r”.  
+
+The tenth most common diagram is “ID”, whose partial decryption with our assumption is “eD”. The most commons diagram starting with “e” are: “es”, “en”, “ed”, and “ea”. Among these, the only one whose second letter has not already a match in our assumption is “es”, so we assume that “s” encryption is “D”. 
+
+At this point, we started to analyze the partially decrypted text and we started making assumptions based on the fact that the text should have made sense in English. Below we report a list of parts of the partially encrypted message and what our assumption on the missing letter was.
+
+\begin{itemize}
+    \item straightenhisCaGJandnarrLHhisAittAeCAFeeEes = straighten his back and narrow his little blue eyes;
+    \item EesoRcourseiRitsRinetoQorrowsaid = yes of course if it is fine tomorrow said;
+    \item needsaboUeall = needs above all;
+    \item aneZtraordinaryBoyasifi = an extraordinary joy as if;
+\end{itemize} 
+
+
 
 
 \section{Exercise 2 - Vigenère cipher}
@@ -119,3 +139,4 @@ The complexity of the algorithm for breaking the Vigenère cipher can be estimat
 \pagebreak
 
 \end{document}
+
