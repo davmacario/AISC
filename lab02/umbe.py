@@ -63,5 +63,8 @@ def main():
     data=pd.DataFrame(results, columns=columns, index=rows)
     print(data)
 
+    known_plaintext = 0b0111001001101110
+    known_cipher = 0b0001111001100101 
+
 if __name__=="__main__":
     main()
