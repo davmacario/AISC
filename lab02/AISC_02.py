@@ -46,6 +46,10 @@ def mult(p1, p2):
  
 def intToVec(n):
     """Convert a 2-byte integer into a 4-nibble vector"""
+    # Explaination:
+    # Each number is divided into 4 x 4-bit nibbles
+    # The bits are shifted by a suitable amount (by 12 to get first 4 bits, by 4 to get third nibble)
+    # The AND (&) with 0xf is needed to only isolate 4 bits from each shift!
     return [n >> 12, (n >> 4) & 0xf, (n >> 8) & 0xf,  n & 0xf]
  
 def vecToInt(m):
