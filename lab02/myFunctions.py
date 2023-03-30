@@ -134,13 +134,3 @@ def decrypt_very(ctext):
     
     return vecToInt(state)
 
-def my_decrypt_foo(ctext, w):
-    """Decrypt ciphertext block"""
-    
-    # invert last round: AK-SR-NS
-    state = addKey(intToVec((w[0] << 8) + w[1]), intToVec(ctext))
-    state = shiftRow(state)
-    state = sub4NibList(sBoxI, state)
-    
-    return vecToInt(state)
-

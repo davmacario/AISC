@@ -4,7 +4,7 @@ import random
 import numpy as np
 import pandas as pd
 
-def main():
+def avalancheEffect():
 
     random.seed(0)
     length = 16
@@ -63,8 +63,35 @@ def main():
     data=pd.DataFrame(results, columns=columns, index=rows)
     print(data)
 
+
+def improperBlockCypher():
+
+    with open("ciphertext.txt", "r") as text_file:
+        encryption = base64.b64decode(text_file.read())
+
     known_plaintext = 0b0111001001101110
     known_cipher = 0b0001111001100101 
 
+    partial_encryption = shiftRow(sub4NibList(sBox, intToVec(known_plaintext)))
+    key = known_cipher ^ vecToInt(partial_encryption)
+
+    keyExp(key)
+
+    out_str = ""
+
+    for i in range(0, len(encryption), 2):
+        c0 = encryption[i]
+        c1 = encryption[i+1]
+        
+        current = (c0 << 8) + c1
+
+        current_decrypt = decrypt_foo(current)
+
+        out_str += chr((current_decrypt & 0xff00) >> 8)
+        out_str += chr(current_decrypt & 0x00ff)
+    
+    print(out_str)
+
 if __name__=="__main__":
-    main()
+    avalancheEffect()
+    improperBlockCypher()
