@@ -75,7 +75,7 @@ def improperBlockCypher():
     partial_encryption = shiftRow(sub4NibList(sBox, intToVec(known_plaintext)))
     key = known_cipher ^ vecToInt(partial_encryption)
 
-    keyExp(key)
+    #keyExp(key)
 
     out_str = ""
 
@@ -85,7 +85,10 @@ def improperBlockCypher():
         
         current = (c0 << 8) + c1
 
-        current_decrypt = decrypt_foo(current)
+        partial = addKey(intToVec(key), intToVec(current))
+        partial = shiftRow(partial)
+        partial = sub4NibList(sBoxI, partial)
+        current_decrypt = vecToInt(partial)
 
         out_str += chr((current_decrypt & 0xff00) >> 8)
         out_str += chr(current_decrypt & 0x00ff)
