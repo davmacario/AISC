@@ -110,15 +110,23 @@ The resulting plaintext contained a quote from `The Lord of the Rings':
    Bilbo was very rich and very peculiar, and had been the wonder of the Shire for sixty years, ever since his remarkable disappearance and unexpected return. 
    The riches he had brought back from his travels had now become a local legend, and it was popularly believed, whatever the old folk might say, that the Hill at Bag End was full of tunnels stuffed with treasure. 
    And if that was not enough for fame, there was also his prolonged vigour to marvel at. Time wore on, but it seemed to have little effect on Mr.\ Baggins.
-    At ninety he was much the same as at fifty. 
-    At ninety-nine they began to call him well-preserved, but unchanged would have been nearer the mark. There were some that shook their heads and thought this was too much of a good thing; it seemed unfair that anyone should possess (apparently) perpetual youth as well as (reputedly) inexhaustible wealth}
+   At ninety he was much the same as at fifty. 
+   At ninety-nine they began to call him well-preserved, but unchanged would have been nearer the mark. 
+   There were some that shook their heads and thought this was too much of a good thing; it seemed unfair that anyone should possess (apparently) perpetual youth as well as (reputedly) inexhaustible wealth}
 \end{quote}
 
 \subsection{Decryption under COA}
 \label{sec:03.1}
 
 As seen, breaking the encryption scheme under KPA is simple, as the mechanism lacks the initial XOR operation between plaintext and sub-key.
-In the case in which there was no available
+Supposing there is no available known plaintext–ciphertext pairs, the approach taken by an attacker needs to be different.
+
+The overall encryption process for a long plaintext (such as the one in `ciphertext.txt'), then becomes similar to that of a Vigenère cipher, in which different portions (blocks) of the message are encrypted in the same way. In particular, after being passed through the S-Boxes and the ``Shift Rows'', the same key is applied on every set of 2 characters (16 bits).
+
+The presence of the two initial sections, however, makes it difficult for the opponent to proceed in the same way as in lab 1, i.e., by performing frequency analysis of the (two) subsequences. Indeed, thanks to the confusion introduced by the `Substitute Bytes' and `Shift Rows' blocks, which cause bits from the first of the 2 characters to have an impact on the last four bits, and vice–versa.
+As a result, each character in the ciphertext essentially depends on two characters from the plaintext.
+This makes it impossible to cryptanalyze this block cipher in the case of a Ciphertext Only Attack and for this reason the only viable attack is to brute force the 16-bit key.
+The only approach that may be followed to slightly simplify the search could be that of realizing that the same couple of (ordered) characters are associated to the same couples of characters in the ciphertext, since, even if improperly implemented, this block cipher has been defined to be invertible.
 
 \section{Conclusions}
 \label{sec:04}
