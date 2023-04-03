@@ -88,6 +88,15 @@ This structure already highlights one main security issue, as the lack of an ini
 
 Furthermore, the key expansion procedure proposed for the simple AES can be seen to produce as subkeys $k_0$ and $k_1$ the first 8 bits and the last 8 bits respectively. For this reason, the key which is added during the last (and only) ``Add Key'' stage corresponds to the actual key itself, as provided by the user.
 
+Figure \ref{fig:3.1} shows the structure of the described block cipher.
+
+\begin{figure} [ht]
+   \centering
+   \includegraphics[width = .5\linewidth]{improper_block_scheme.jpeg}
+   \caption{Structure of the improperly implemented block cipher}
+   \label{fig:3.1}
+\end{figure}
+
 Putting all these things together, the proposed attack consists in performing the first two stages on the known plaintext (``Substitute Bytes'' and ``Shift Rows'') and then directly finding the key by evaluating the XOR between the result of the first stages and the known ciphertext. This last step guarantees the discovery of the key (in theory the ensemble of sub-keys $k_0$ and $k_1$), thanks to the properties of the XOR operator ($A\oplus B = C\ \implies A\oplus C = B$).
 
 By performing these steps, the key used in the known pleintext-ciphertext pair was found to be \verb|0b100000111101111|.
@@ -97,7 +106,12 @@ The ciphertext was then decrypted, knowing the block cipher was used on two char
 The resulting plaintext contained a quote from `The Lord of the Rings':
 
 \begin{quote}
-   \textit{When Mr. Bilbo Baggins of Bag End announced that he would shortly be celebrating his eleventy-first birthday with a party of special magnificence, there was much talk and excitement in Hobbiton. Bilbo was very rich and very peculiar, and had been the wonder of the Shire for sixty years, ever since his remarkable disappearance and unexpected return. The riches he had brought back from his travels had now become a local legend, and it was popularly believed, whatever the old folk might say, that the Hill at Bag End was full of tunnels stuffed with treasure. And if that was not enough for fame, there was also his prolonged vigour to marvel at. Time wore on, but it seemed to have little effect on Mr. Baggins. At ninety he was much the same as at fifty. At ninety-nine they began to call him well-preserved, but unchanged would have been nearer the mark. There were some that shook their heads and thought this was too much of a good thing; it seemed unfair that anyone should possess (apparently) perpetual youth as well as (reputedly) inexhaustible wealth}
+   \textit{When Mr.\ Bilbo Baggins of Bag End announced that he would shortly be celebrating his eleventy-first birthday with a party of special magnificence, there was much talk and excitement in Hobbiton. 
+   Bilbo was very rich and very peculiar, and had been the wonder of the Shire for sixty years, ever since his remarkable disappearance and unexpected return. 
+   The riches he had brought back from his travels had now become a local legend, and it was popularly believed, whatever the old folk might say, that the Hill at Bag End was full of tunnels stuffed with treasure. 
+   And if that was not enough for fame, there was also his prolonged vigour to marvel at. Time wore on, but it seemed to have little effect on Mr.\ Baggins.
+    At ninety he was much the same as at fifty. 
+    At ninety-nine they began to call him well-preserved, but unchanged would have been nearer the mark. There were some that shook their heads and thought this was too much of a good thing; it seemed unfair that anyone should possess (apparently) perpetual youth as well as (reputedly) inexhaustible wealth}
 \end{quote}
 
 \subsection{Decryption under COA}
@@ -110,7 +124,7 @@ In the case in which there was no available
 \label{sec:04}
 
 \begin{thebibliography}{5}
-   \bibitem{Original Python implementation} \url{https://jhafranco.com/2012/02/11/simplified-aes-implementation-in-python/}
+   \bibitem{Original Python implementation} \url{https://jhafranco.com/2012/02/11/simplified-aes-implementation-in-python}
 \end{thebibliography}
 
 \end{document}
