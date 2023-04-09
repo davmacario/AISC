@@ -6,12 +6,8 @@ nTimes = 1000
 
 
 def exp1(ntimes, nrounds, lazyness):
-    if lazyness:
-        enc = lazy.encryptLazy
-        dec = lazy.decryptLazy
-    else:
-        enc = encrypt2
-        dec = decrypt2
+    enc = encrypt2 if lazyness == 0 else lazy.encryptLazy if lazyness == 1 else lazy.encryptVeryLazy
+    dec = decrypt2 if lazyness == 0 else lazy.decryptLazy if lazyness == 1 else lazy.decryptVeryLazy
     sumdist = 0
     currkey = 0b1111111111111111
     for i in range(0, ntimes):
@@ -98,11 +94,19 @@ def decrypt2(ctext, nrounds):
 if __name__ == '__main__':
     exp1(nTimes, 2, 0)
     exp2(nTimes, 2, 0)
+
     exp1(nTimes, 3, 0)
     exp2(nTimes, 3, 0)
+
     exp1(nTimes, 4, 0)
     exp2(nTimes, 4, 0)
+
     exp1(nTimes, 4, 1)
     exp2(nTimes, 4, 1)
+
     exp1(nTimes, 4, 2)
     exp2(nTimes, 4, 2)
+    keyExp(0b1111111111111111)
+    print(w)
+    keyExp(0b1111111111111110)
+    print(w)
