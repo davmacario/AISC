@@ -147,7 +147,6 @@ As seen, breaking the encryption scheme under KPA is simple, as the mechanism la
 Supposing there is no available known plaintext–ciphertext pairs, the approach taken by an attacker needs to be different.
 
 The overall encryption process for a long plaintext (such as the one in `ciphertext.txt'), then becomes similar to that of a Vigenère cipher, in which different portions (blocks) of the message are encrypted in the same way. In particular, after being passed through the S-Boxes and the ``Shift Rows'', the same key is applied on every set of 2 characters (16 bits).
-\label{sec:01}
 
 This laboratory revolved around the analysis of a simplified version of AES (Advanced Encryption Standard), which was provided as a python script, which can be found at \cite{Original Python implementation}, and which also contained all necessary sub–blocks for each round (SBox, ShiftRows, MixColumns and AddKey).
 These blocks are designed to work on 16–bit inputs, organized as 2–by–2 matrices of 4–bit `\textit{nibbles}'. Also the key is a 16-bit string.
