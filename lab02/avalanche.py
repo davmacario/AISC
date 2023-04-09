@@ -91,22 +91,43 @@ def decrypt2(ctext, nrounds):
     return vecToInt(state)
 
 
+def exp1_ex(ptext, currkey):
+    enc = lazy.encryptLazy
+    dec = lazy.decryptLazy
+    nrounds = 4
+    x = ptext
+    err = 1 << random.randrange(16)
+    y = err ^ x
+    assert hamming(x, y) == 1
+    keyExp(currkey)
+    xenc = enc(x, nrounds)
+    assert dec(xenc, nrounds) == x
+    yenc = enc(y, nrounds)
+    assert dec(yenc, nrounds) == y
+    dist = hamming(xenc, yenc)
+    print(f"Hamming distance: {dist}")
+    print(f"        Plaintext: {bin(x)},         ciphertext: {bin(xenc)}")
+    print(f"Changed plaintext: {bin(y)}, changed ciphertext: {bin(yenc)}")
+
+
 if __name__ == '__main__':
-    exp1(nTimes, 2, 0)
-    exp2(nTimes, 2, 0)
-
-    exp1(nTimes, 3, 0)
-    exp2(nTimes, 3, 0)
-
-    exp1(nTimes, 4, 0)
-    exp2(nTimes, 4, 0)
-
-    exp1(nTimes, 4, 1)
-    exp2(nTimes, 4, 1)
-
-    exp1(nTimes, 4, 2)
-    exp2(nTimes, 4, 2)
-    keyExp(0b1111111111111111)
-    print(w)
-    keyExp(0b1111111111111110)
-    print(w)
+    # exp1(nTimes, 2, 0)
+    # exp2(nTimes, 2, 0)
+    #
+    # exp1(nTimes, 3, 0)
+    # exp2(nTimes, 3, 0)
+    #
+    # exp1(nTimes, 4, 0)
+    # exp2(nTimes, 4, 0)
+    #
+    # exp1(nTimes, 4, 1)
+    # exp2(nTimes, 4, 1)
+    #
+    # exp1(nTimes, 4, 2)
+    # exp2(nTimes, 4, 2)
+    # keyExp(0b1111111111111111)
+    # print(w)
+    # keyExp(0b1111111111111110)
+    # print(w)
+    exp1_ex(0b1010101010101010, 0b1111111111111111)
+    exp1_ex(0b0010101001101110, 0b0001000101101001)
