@@ -73,7 +73,7 @@ def improperBlockCypher():
     known_cipher = 0b0001111001100101 
 
     partial_encryption = shiftRow(sub4NibList(sBox, intToVec(known_plaintext)))
-    key = known_cipher ^ vecToInt(partial_encryption)
+    key = known_cipher ^ vecToInt(partial_encryption) 
 
     #keyExp(key)
 

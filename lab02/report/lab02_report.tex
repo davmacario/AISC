@@ -63,6 +63,7 @@
 \label{sec:01}
 
 This laboratory revolved around the analysis of a simplified version of AES (Advanced Encryption Standard), which was provided as a python script, which can be found at~\cite{Original Python implementation}, and which also contained all necessary sub–blocks for each round (SBox, ShiftRows, MixColumns and AddKey).
+
 These blocks are designed to work on 16–bit inputs, organized as 2–by–2 matrices of 4–bit `\textit{nibbles}'. Also the key is a 16-bit string.
 
 The focus of this analysis is to test the behavior of the simplified AES in terms of avalanche effect, and to cryptanalyze an improper implementation of a block cipher, based on the provided sub-blocks, in order to break a ciphertext.
@@ -78,6 +79,7 @@ Two different experiments will be taken.
 In the first one, given a key, a plaintext is randomly generated and encrypted, then a bit of the plaintext is flipped and the result is encrypted. The key used is: {\color{blue}0b1111111111111111}.
 In the second one, chosen a plaintext, the key is randomly generated and used to encrypt the plaintext; the same plaintext is then encrypted with the key with a single bit flipped. The used plaintext is: {\color{blue}0b1010101010101010}.
 Both the experiments are repeated 1000 times, and the avalanche effect is measured referring to the average of the hamming distances of each single run.
+
 Since they will be recalled more times, for the sake of convenience they will be respectively called ``changed plaintext'' and ``changed key'' experiments.
 
 In the first step, the algorithm is composed of all its four fundamental blocks, which will be repeated two times. For the ``changed plaintext'' experiment the average hamming measured is around {\color{blue}4}, and a value of {\color{blue}8} is obtained for the ``changed key''.
@@ -93,6 +95,22 @@ However this ``lazy version'' still produces an appreciable diffusion effect for
 The last test, called ``very lazy version'', follows a cut on the key expansion block's behavior, so that only the first two round keys will be used for all the rounds. Finally the encryption becomes now ineffective, giving hamming distance values around {\color{blue}2} for both the experiments. Now a single bit change to the key in the ``changed key'' experiment will end in a less diffused result, since the key expansion gives now as a result the starting key value with the two bytes inverted in position.
 
 These experiments showed how the AES algorithm needs to be fully implemented to grant diffusion and confusion properties in every cases, so that cryptanalysis techniques are almost impossible to be performed.
+
+\begin{table}[h!]
+    \centering
+    \scalebox{0.65}{
+    \begin{tabular}{|c||l|l|l|l|l|}
+    \hline
+        & 2 rounds & 3 rounds & 4 rounds & 4 rounds, lazy implementation & 4 rounds, very lazy implementation\\
+        \hline
+        \hline
+        flipping one bit in the plaintext & 4.229 & 8.646 & 7.987 & 2.107 & 2.108 \\
+        \hline
+        flipping one in the key & 8.053 & 8.041 & 7.881 & 7.998 & 2.055\\
+        \hline
+    \end{tabular}}
+    \caption{Average hamming distance between ciphetexts}
+\end{table}
 
 
 \section{Improperly implemented block cipher}
@@ -147,12 +165,6 @@ As seen, breaking the encryption scheme under KPA is simple, as the mechanism la
 Supposing there is no available known plaintext–ciphertext pairs, the approach taken by an attacker needs to be different.
 
 The overall encryption process for a long plaintext (such as the one in `ciphertext.txt'), then becomes similar to that of a Vigenère cipher, in which different portions (blocks) of the message are encrypted in the same way. In particular, after being passed through the S-Boxes and the ``Shift Rows'', the same key is applied on every set of 2 characters (16 bits).
-
-This laboratory revolved around the analysis of a simplified version of AES (Advanced Encryption Standard), which was provided as a python script, which can be found at~\cite{Original Python implementation}, and which also contained all necessary sub–blocks for each round (SBox, ShiftRows, MixColumns and AddKey).
-These blocks are designed to work on 16–bit inputs, organized as 2–by–2 matrices of 4–bit `\textit{nibbles}'. Also the key is a 16-bit string.
-
-The focus of this analysis is to test the behavior of the simplified AES in terms of avalanche effect, and to cryptanalyze an improper implementation of a block cipher, based on the provided sub-blocks, in order to break a ciphertext.
-
 
 \section{Conclusions}
 \label{sec:04}
