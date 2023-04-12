@@ -87,10 +87,9 @@ The resulted diffusion property of the ``changed key'' is explained by the fact 
 The other first experiment shows instead a weaker behavior: the state is treated as four blocks, and a change in one of them does not necessarily result in big differences after just two rounds of AES\@. Indeed, as the the number of rounds raises to 3, the avalanche effect measured starts to converge to values around {\color{blue}8} for both the experiments.
 As the number of rounds raises the results continue to show a good average hamming distance, which sets to 3 number of minimum rounds needed to have a sufficient avalanche effect.
 
-Now, for the next following step, referred as `lazy version'', ShiftRows and MixColumns blocks are missing and as the experiments are done, the hamming distances decrease drastically for the ``changed plaintext'' experiment. This enlights how the diffusion property is strongly dependent on ShiftRows and MixColumns blocks. The reason lies in the way these two stages operate: they provide bit shuffling between different 4-bits nibbles of the state, and consequently if they're skipped the difference between two ciphertexts obtained from two plaintexts which have hamming distance equals to {\color{blue}1} cannot be more than 4, which is the size of a nibble.
+Now, for the next following step, referred to as ``lazy version'', ShiftRows and MixColumns blocks are missing and as the experiments are done, the hamming distances decrease drastically for the ``changed plaintext'' experiment. This enlights how the diffusion property is strongly dependent on ShiftRows and MixColumns blocks. The reason lies in the way these two stages operate: they provide bit shuffling between different 4-bits nibbles of the state, and consequently, if they're skipped, the difference between two ciphertexts obtained from two plaintexts which have hamming distance equals to {\color{blue}1} cannot be more than 4, which is the size of a nibble.
 Here two examples are reported.
-***todo: table with two examples***
-However this ``lazy version'' still produces an appreciable diffusion effect for the ``changed key'' experiment after a slight change in the key.
+In any case, this ``lazy version'' still produces an appreciable diffusion effect for the ``changed key'' experiment after a slight change in the key.
 
 The last test, called ``very lazy version'', follows a cut on the key expansion block's behavior, so that only the first two round keys will be used for all the rounds. Finally the encryption becomes now ineffective, giving hamming distance values around {\color{blue}2} for both the experiments. Now a single bit change to the key in the ``changed key'' experiment will end in a less diffused result, since the key expansion gives now as a result the starting key value with the two bytes inverted in position.
 
@@ -116,9 +115,9 @@ These experiments showed how the AES algorithm needs to be fully implemented to 
 \section{Improperly implemented block cipher}
 \label{sec:03}
 
-The second part of this laboratory concerned the cryptanalysis of an improperly-implemented block cipher of which the description was given, and which used on the blocks that were provided for the simplified AES.\@
+The second part of this laboratory concerned the cryptanalysis of an improperly-implemented block cipher whose implementation was given, and which used on the blocks that were provided for the simplified AES.\@
 
-The proposed procedure was essentially that of carrying out a KPA having observed a single plaintext-ciphertext pair, which was obtained with the same key as the large ciphertext that needed to be broken.
+The task was essentially that of carrying out a KPA having observed a single plaintext-ciphertext pair, which was obtained with the same key as another large ciphertext that needed to be broken.
 The pair was the following:
 
 \begin{itemize}
@@ -126,10 +125,10 @@ The pair was the following:
    \item \textbf{Known ciphertext}: \verb|0b0001111001100101| 
 \end{itemize}
 
-Having the possibility to observe the Python code which implemented the encryption (and decryption) mechanism, it was found that the block cipher only consisted of a single round, composed of ``Substitute Bytes'', ``Shift Row'' and ``Add Key'' (with a 16-bit subkey) blocks only, whose order was reversed for decryption.
+Having the possibility to observe the Python code which implemented the encryption (and decryption) mechanism, it was found that the block cipher consisted of a single round, composed of ``Substitute Bytes'', ``Shift Rows'' and ``Add Key'' (with a 16-bit subkey) blocks only, whose order was reversed for decryption.
 This structure already highlights one main security issue, as the lack of an initial ``Add Key'' stage makes it so that the knowledge about the bits before the last ``Add Key'' automatically reveals the plaintext (the remaining stages do not contain `secrets' such as the key).
 
-Furthermore, the key expansion procedure proposed for the simple AES can be seen to produce as subkeys $k_0$ and $k_1$ the first 8 bits and the last 8 bits respectively. For this reason, the key which is added during the last (and only) ``Add Key'' stage corresponds to the actual key itself, as provided by the user.
+Furthermore, the key expansion procedure proposed for the simple AES can be seen to produce as subkeys $k_0$ and $k_1$ the first 8 bits and the last 8 bits of the original key, respectively. For this reason, the key which is added during the last (and only) ``Add Key'' stage corresponds to the actual key itself, as provided by the user.
 
 Figure~\ref{fig:3.1} shows the structure of the described block cipher.
 
@@ -140,7 +139,7 @@ Figure~\ref{fig:3.1} shows the structure of the described block cipher.
    \label{fig:3.1}
 \end{figure}
 
-Putting all these things together, the proposed attack consists in performing the first two stages on the known plaintext (``Substitute Bytes'' and ``Shift Rows'') and then directly finding the key by evaluating the XOR between the result of the first stages and the known ciphertext. This last step guarantees the discovery of the key (in theory the ensemble of sub-keys $k_0$ and $k_1$), thanks to the properties of the XOR operator ($A\oplus B = C\ \implies A\oplus C = B$).
+Putting all these things together, the proposed (known plaintext) attack consists in performing the first two stages on the known plaintext (``Substitute Bytes'' and ``Shift Rows'') and then directly finding the key by evaluating the XOR between the result of the first stages and the known ciphertext. This last step guarantees the discovery of the key (in theory the ensemble of sub-keys $k_0$ and $k_1$), thanks to the properties of the XOR operator ($A\oplus B = C\ \implies A\oplus C = B$).
 
 By performing these steps, the key used in the known pleintext-ciphertext pair was found to be \verb|0b100000111101111|.
 
@@ -166,8 +165,20 @@ Supposing there is no available known plaintext–ciphertext pairs, the approach
 
 The overall encryption process for a long plaintext (such as the one in `ciphertext.txt'), then becomes similar to that of a Vigenère cipher, in which different portions (blocks) of the message are encrypted in the same way. In particular, after being passed through the S-Boxes and the ``Shift Rows'', the same key is applied on every set of 2 characters (16 bits).
 
+The presence of the two initial sections, however, makes it difficult for the opponent to proceed in the same way as in laboratory 1, i.e., by performing frequency analysis of the (two) subsequences. Indeed, thanks to the confusion introduced by the `Substitute Bytes' and `Shift Rows' blocks, which cause bits from the first of the 2 characters to have an impact on the last 8 bits, and vice–versa.
+As a result, each character in the ciphertext essentially depends on two characters from the plaintext.
+This makes it impossible to cryptanalyze this block cipher in the case of a Ciphertext Only Attack and for this reason the only viable attack is to brute force the 16-bit key.
+The only approach that may be followed to slightly simplify the search could be that of realizing that the same couple of (ordered) characters are associated to the same couples of characters in the ciphertext, since, even if improperly implemented, this block cipher has been defined to be invertible.
+
+
 \section{Conclusions}
 \label{sec:04}
+
+During this laboratory experience it was possible to experiment with a trivial implementation of AES, which helped in getting some insights on how actual AES implementations behave.
+
+It was interesting to really see how the algorithm is able to achieve the avalanche effect and how it this is important in guaranteeing an effective encryption.
+
+The study of the improperly-implemented block-cipher-based encryption mechanism, instead, provided a way to analyze block ciphers from the security point of view, by effectively highlighting the possible attack surfaces of poorly implemented solutions.
 
 \begin{thebibliography}{5}
    \bibitem{Original Python implementation} \url{https://jhafranco.com/2012/02/11/simplified-aes-implementation-in-python}
