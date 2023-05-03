@@ -73,25 +73,50 @@ The focus of this analysis is to test the behavior of the simplified AES in term
 
 The goal of the first section of this laboratory was to demonstrate the avalanche effect of the simplified AES that follows a single bit flip after various manipulations of the algorithm, such as different number of rounds and the missing implementations of some fundamental steps.
 
-To measure the avalanche effect the hamming distance will be computed: values around half the length of the elements in exam mean a good avalanche effect, since the correlation between them is at its lowest point.
+To measure the avalanche effect the hamming distance will be computed: values around half the length of the elements in exam mean a good avalanche effect, since the correlation between them is at its lowest.
 
 Two different experiments will be taken.
-In the first one, given a key, a plaintext is randomly generated and encrypted, then a bit of the plaintext is flipped and the result is encrypted. The key used is: {\color{blue}0b1111111111111111}.
-In the second one, chosen a plaintext, the key is randomly generated and used to encrypt the plaintext; the same plaintext is then encrypted with the key with a single bit flipped. The used plaintext is: {\color{blue}0b1010101010101010}.
+In the first one, given a key, a plaintext is randomly generated and encrypted, then a bit of the plaintext is flipped and the result is encrypted. The key used is: \verb|0b1111111111111111|.
+In the second one, chosen a plaintext, the key is randomly generated and used to encrypt the plaintext; the same plaintext is then encrypted with the key with a single bit flipped. The used plaintext is: \verb|0b1010101010101010|.
 Both the experiments are repeated 1000 times, and the avalanche effect is measured referring to the average of the hamming distances of each single run.
 
 Since they will be recalled more times, for the sake of convenience they will be respectively called ``changed plaintext'' and ``changed key'' experiments.
 
-In the first step, the algorithm is composed of all its four fundamental blocks, which will be repeated two times. For the ``changed plaintext'' experiment the average hamming measured is around {\color{blue}4}, and a value of {\color{blue}8} is obtained for the ``changed key''.
-The resulted diffusion property of the ``changed key'' is explained by the fact that when, during the second round, the key expansion is performed it changes radically the key itself, so when the xor is applied to the state it statistically will make this last one completely different from its starting value.
-The other first experiment shows instead a weaker behavior: the state is treated as four blocks, and a change in one of them does not necessarily result in big differences after just two rounds of AES\@. Indeed, as the the number of rounds raises to 3, the avalanche effect measured starts to converge to values around {\color{blue}8} for both the experiments.
-As the number of rounds raises the results continue to show a good average hamming distance, which sets to 3 number of minimum rounds needed to have a sufficient avalanche effect.
+In the first step, the algorithm is composed of all its four fundamental blocks, which will be repeated two times. 
+For the ``changed plaintext'' experiment the average hamming distance measured is around \verb|4|, and a value of \verb|8| is obtained for the ``changed key''.
+The resulting diffusion property of the ``changed key'' is explained by the fact that when, during the second round, the key expansion is performed, it changes radically the key itself, so the new state (obtained evaluating the XOR between the key and the current state) will statistically become completely different from its starting value.
+The other first experiment shows instead a weaker behavior: the state is treated as four blocks, and a change in one of them does not necessarily result in big differences after just two rounds of AES\@. 
+Indeed, as the the number of rounds raises to 3, the avalanche effect measured starts to converge to values around \verb|8| for both the experiments.
+As the number of rounds raises the results continue to show a good average hamming distance, which sets to 3 the number of minimum rounds needed to have a sufficient avalanche effect.
 
-Now, for the next following step, referred to as ``lazy version'', ShiftRows and MixColumns blocks are missing and as the experiments are done, the hamming distances decrease drastically for the ``changed plaintext'' experiment. This enlights how the diffusion property is strongly dependent on ShiftRows and MixColumns blocks. The reason lies in the way these two stages operate: they provide bit shuffling between different 4-bits nibbles of the state, and consequently, if they're skipped, the difference between two ciphertexts obtained from two plaintexts which have hamming distance equals to {\color{blue}1} cannot be more than 4, which is the size of a nibble.
-Here two examples are reported.
+Now, for the next following step, referred to as ``lazy version'', ShiftRows and MixColumns blocks are missing and as the experiments are done, the hamming distances decrease drastically for the ``changed plaintext'' experiment. This enlights how the diffusion property is strongly dependent on ShiftRows and MixColumns blocks. The reason lies in the way these two stages operate: they provide bit shuffling between different 4-bits nibbles of the state, and consequently, if these stages are skipped, the difference between two ciphertexts obtained from two plaintexts which have hamming distance equals to \verb|1| cannot be more than 4, which is the size of a nibble.
+
+\begin{table}[h!]
+    \centering
+    \scalebox{0.65}{
+    \begin{tabular}{|r||l|l|}
+    \hline
+        & Plaintext & Ciphertext\\
+        \hline
+        \hline
+        Instance 1 & 1010 1010 1010 1010 & 0111 0001 0001 0011\\
+        \hline
+        Changed values for instance 1 & 1010 1110 1010 1010 & 0111 0010 0001 0011\\
+        \hline
+        \hline
+        Instance 2 & 0010 1010 0110 1110 & 1111 1011 1100 0101\\
+        \hline
+        Changed values for instance 2 & 0010 1011 0110 1110 & 1111 0100 1100 0101\\
+        \hline
+    \end{tabular}}
+    \caption{Two results (in blocks) of the "changed plaintext" experiment ("lazy version")}
+\end{table}
+
 In any case, this ``lazy version'' still produces an appreciable diffusion effect for the ``changed key'' experiment after a slight change in the key.
 
-The last test, called ``very lazy version'', follows a cut on the key expansion block's behavior, so that only the first two round keys will be used for all the rounds. Finally the encryption becomes now ineffective, giving hamming distance values around {\color{blue}2} for both the experiments. Now a single bit change to the key in the ``changed key'' experiment will end in a less diffused result, since the key expansion gives now as a result the starting key value with the two bytes inverted in position.
+The last test, called ``very lazy version'', follows a cut on the key expansion block's behavior, so that only the first two round keys will be used for all the rounds. 
+Finally the encryption becomes now ineffective, giving hamming distance values around \verb|2| for both the experiments. 
+Now a single bit change to the key in the ``changed key'' experiment will end in a less diffused result, since only the first two subkeys obtained from the key expansion (which values correspond to the first and the second byte of the key respectively) are used for the encryption.
 
 These experiments showed how the AES algorithm needs to be fully implemented to grant diffusion and confusion properties in every cases, so that cryptanalysis techniques are almost impossible to be performed.
 
@@ -128,7 +153,8 @@ The pair was the following:
 Having the possibility to observe the Python code which implemented the encryption (and decryption) mechanism, it was found that the block cipher consisted of a single round, composed of ``Substitute Bytes'', ``Shift Rows'' and ``Add Key'' (with a 16-bit subkey) blocks only, whose order was reversed for decryption.
 This structure already highlights one main security issue, as the lack of an initial ``Add Key'' stage makes it so that the knowledge about the bits before the last ``Add Key'' automatically reveals the plaintext (the remaining stages do not contain `secrets' such as the key).
 
-Furthermore, the key expansion procedure proposed for the simple AES can be seen to produce as subkeys $k_0$ and $k_1$ the first 8 bits and the last 8 bits of the original key, respectively. For this reason, the key which is added during the last (and only) ``Add Key'' stage corresponds to the actual key itself, as provided by the user.
+Furthermore, the key expansion procedure proposed for the simple AES can be seen to produce as subkeys $k_0$ and $k_1$ the first 8 bits and the last 8 bits of the original key, respectively. 
+For this reason, the key which is added during the last (and only) ``Add Key'' stage corresponds to the actual key itself, as provided by the user.
 
 Figure~\ref{fig:3.1} shows the structure of the described block cipher.
 

@@ -24,7 +24,7 @@ def exp1(ntimes, nrounds, lazyness):
     sumdist /= ntimes
     lazymsg = "" if lazyness == 0 else "(LAZY) " if lazyness == 1 else "(VERY LAZY) "
     print(f"Experiment 1 using {lazymsg}{nrounds}-round AES")
-    print(f"Key: {currkey}")
+    print(f"Key: {bin(currkey)}")
     print(f"Average hamming distance in {ntimes} tests: {sumdist}\n")
 
 
@@ -45,7 +45,7 @@ def exp2(ntimes, nrounds, lazyness):
     sumdist /= ntimes
     lazymsg = "" if lazyness == 0 else "(LAZY) " if lazyness == 1 else "(VERY LAZY) "
     print(f"Experiment 2 using {lazymsg}{nrounds}-round AES")
-    print(f"Plaintext: {plaintext}")
+    print(f"Plaintext: {bin(plaintext)}")
     print(f"Average hamming distance in {ntimes} tests: {sumdist}\n")
 
 
@@ -125,9 +125,9 @@ if __name__ == '__main__':
     #
     # exp1(nTimes, 4, 2)
     # exp2(nTimes, 4, 2)
-    # keyExp(0b1111111111111111)
-    # print(w)
-    # keyExp(0b1111111111111110)
-    # print(w)
-    exp1_ex(0b1010101010101010, 0b1111111111111111)
-    exp1_ex(0b0010101001101110, 0b0001000101101001)
+    keyExp(0b1111111100000000)
+    print(f"w0 = {bin(w[0])}, w1 = {bin(w[1])}")
+    keyExp(0b1101001010011111)
+    print(f"w0 = {bin(w[0])}, w1 = {bin(w[1])}")
+    # exp1_ex(0b1010101010101010, 0b1111111111111111)
+    # exp1_ex(0b0010101001101110, 0b0001000101101001)
