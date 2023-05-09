@@ -12,7 +12,10 @@ def main():
 
     # If possible, try opening the txt file containing an already generated pair (generation is random...)
     try:
-        f = open("dh_keys.txt", "r")
+        try:
+            f = open("dh_keys.txt", "r")
+        except:
+            f = open("lab03/dh_keys.txt")
 
         x = int(f.readline().split(" ")[-1].split("\n")[0])
         pk = int(f.readline().split(" ")[-1].split("\n")[0])
@@ -36,6 +39,7 @@ def main():
         pk = pow(g, x, p)
         key_pair_gen_time = time.time() - t_0
         print(f"> Time to generate (pk, sk) pair: {key_pair_gen_time} s")
+        # > Time to generate (pk, sk) pair: 0.028232097625732422 s
 
         print(f"Public key: \n{pk}\n")
 
@@ -54,6 +58,7 @@ def main():
     shared_key_gen_time = time.time() - t_0
 
     print(f"> Time to generate shared key: {shared_key_gen_time} s")
+    # > Time to generate shared key: 0.03374791145324707 s
 
     print(f"Shared key - w/ professor: \n{shared_k_prof}\n")
 
@@ -73,6 +78,7 @@ def main():
     (iv, ciphertext) = encryptAESCTR(key_prof, plaintext)
     time_encryption = time.time() - t_0
     print(f"> Time for encryption with AES, ctr mode: {time_encryption} s")
+    # > Time for encryption with AES, ctr mode: 0.031084060668945312 s
 
     iv_str = base64.b64encode(iv).decode("utf-8")
     cipher_str = base64.b64encode(ciphertext).decode("utf-8")
@@ -90,6 +96,7 @@ def main():
     pt_2 = decryptAESCTR(key_prof, iv_2, ct_2)
     time_decryption = time.time() - t_0
     print(f"> Time for decryption with AES, ctr mode: {time_decryption} s")
+    # > Time for decryption with AES, ctr mode: 3.2901763916015625e-05 s
 
     plaintext_prof = pt_2.decode("utf-8")
     print(f"\nReceived prof. plaintext: {plaintext_prof}")
