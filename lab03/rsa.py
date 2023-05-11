@@ -94,23 +94,13 @@ def get_p_q_N(keylen):
     return p, q, N
 
 
-def main(prnt=False):
-    # Adjust position
-    path = "/".join(__file__.split("/")[:-1])
-
-    # Red input file
-    input_file = os.path.join(path, "text.txt")
-
-    with open(input_file, "r") as f:
-        plaintext = f.read()  # String
-
-    pt_len = len(plaintext)
-
-    # Evaluate p, q, N
-    t_0 = time.time()
-
-    security_param = 1024  # Number of bits of N
-    p, q, N = get_p_q_N(security_param)
+def keygen_rsa(keylen):
+    """
+    keygen_rsa
+    ---
+    Generate the keys for RSA given a security parameter
+    """
+    p, q, N = get_p_q_N(keylen)
 
     # assert N.bit_length() == security_param, f"N has {N.bit_length()}!"
 
@@ -127,11 +117,29 @@ def main(prnt=False):
             found = True
             d = x % totient
 
-    t_keygen = time.time() - t_0
+    return N, e, d
 
-    if prnt:
-        print(f"p: {p}\nq: {q}\nN: {N}")
-        print("\n")
+
+def main(prnt=False):
+    # Adjust position
+    path = "/".join(__file__.split("/")[:-1])
+
+    # Red input file
+    input_file = os.path.join(path, "text.txt")
+
+    with open(input_file, "r") as f:
+        plaintext = f.read()  # String
+
+    pt_len = len(plaintext)
+
+    # Evaluate p, q, N
+    security_param = 1024  # Number of bits of N
+
+    t_0 = time.time()
+
+    N, e, d = keygen_rsa(security_param)
+
+    t_keygen = time.time() - t_0
 
     out_pub = os.path.join(path, "rsa_pub.txt")
     out_private = os.path.join(path, "rsa_pri.txt")
