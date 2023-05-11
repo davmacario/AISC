@@ -2,6 +2,9 @@ from AISC_03 import pDH, gDH, qDH, encryptAESCTR, decryptAESCTR
 import os
 import base64
 import time
+import random
+
+random.seed(1)
 
 
 def main():
