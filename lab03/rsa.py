@@ -1,7 +1,10 @@
 from AISC_03 import *
-from random import randint
+from random import randint, seed
 import os
 import time
+
+
+seed(1)
 
 
 def egcd(a, b):
