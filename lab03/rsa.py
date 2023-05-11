@@ -164,6 +164,10 @@ def main(prnt=False):
     if prnt:
         print("Cphertext: ", cipher)
 
+    out_cipher = os.path.join(path, "text_encrypted.txt")
+    with open(out_cipher, "w") as f:
+        f.write("\n".join([str(it) for it in cipher]))
+
     t_2 = time.time()
 
     msg_dec = rsa_decrypt(cipher, (N, d))
