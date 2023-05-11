@@ -1,10 +1,7 @@
 from AISC_03 import *
-from random import randint, seed
+from random import randint
 import os
 import time
-
-
-seed(1)
 
 
 def egcd(a, b):
@@ -123,6 +120,42 @@ def keygen_rsa(keylen):
     return N, e, d
 
 
+def retrieveKeys(path_program):
+    """
+    retrieveKeys
+    ---
+    If available, read files "rsa_pri.txt", "rsa_pub.txt".
+    """
+    # If possible, try opening the txt file containing an already generated pair (generation is random...)
+    try:
+        try:
+            f = open("dh_keys.txt", "r")
+        except:
+            f = open("lab03/dh_keys.txt")
+
+        # Read first file
+        with open(os.path.join(path_program, "rsa_pri.txt")) as f:
+            d = int(f.readline().split(" ")[-1].split("\n")[0])
+            N_1 = int(f.readline().split(" ")[-1].split("\n")[0])
+            f.close()
+
+        # Read second file
+        with open(os.path.join(path_program, "rsa_pub.txt")) as f:
+            e = int(f.readline().split(" ")[-1].split("\n")[0])
+            N_2 = int(f.readline().split(" ")[-1].split("\n")[0])
+            f.close()
+
+        if N_1 == N_2:
+            print("Keys retrieved!")
+
+            return N_1, e, d
+        else:
+            print("The values of N don't match!")
+            raise ValueError("The values of N don't match!")
+    except:
+        return None
+
+
 def main(prnt=False):
     # Adjust position
     path = "/".join(__file__.split("/")[:-1])
@@ -135,24 +168,32 @@ def main(prnt=False):
 
     pt_len = len(plaintext)
 
-    # Evaluate p, q, N
-    security_param = 1024  # Number of bits of N
+    tmp = retrieveKeys(path)
+    if tmp is None:
+        # Evaluate p, q, N
+        security_param = 1024  # Number of bits of N
 
-    t_0 = time.time()
+        t_0 = time.time()
 
-    N, e, d = keygen_rsa(security_param)
+        N, e, d = keygen_rsa(security_param)
 
-    t_keygen = time.time() - t_0
+        t_keygen = time.time() - t_0
 
-    out_pub = os.path.join(path, "rsa_pub.txt")
-    out_private = os.path.join(path, "rsa_pri.txt")
+        out_pub = os.path.join(path, "rsa_pub.txt")
+        out_private = os.path.join(path, "rsa_pri.txt")
 
-    # Store them on files
-    with open(out_pub, "w") as f:
-        f.write("e: " + str(e) + "\nN: " + str(N))
+        # Store them on files
+        with open(out_pub, "w") as f:
+            f.write("e: " + str(e) + "\nN: " + str(N))
 
-    with open(out_private, "w") as f:
-        f.write("d: " + str(d) + "\nN: " + str(N))
+        with open(out_private, "w") as f:
+            f.write("d: " + str(d) + "\nN: " + str(N))
+    else:
+        N = tmp[0]
+        e = tmp[1]
+        d = tmp[2]
+
+        t_keygen = 0
 
     # Map the plaintext onto the message space
     bitlen = N.bit_length()
