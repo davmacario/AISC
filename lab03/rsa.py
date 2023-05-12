@@ -156,12 +156,12 @@ def retrieveKeys(path_program):
         return None
 
 
-def main(prnt=False):
+def main(input_path, prnt=False):
     # Adjust position
     path = "/".join(__file__.split("/")[:-1])
 
     # Red input file
-    input_file = os.path.join(path, "text.txt")
+    input_file = os.path.join(path, input_path)
 
     with open(input_file, "r") as f:
         plaintext = f.read()  # String
@@ -229,4 +229,4 @@ def main(prnt=False):
 
 
 if __name__ == "__main__":
-    main(prnt=False)
+    main("text.txt", prnt=False)
