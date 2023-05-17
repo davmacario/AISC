@@ -4,7 +4,7 @@ import secrets
 import random
 
 from AISC_04 import *
-from ex01_hash_functions import findCollisionsLoop
+from ex01_hash_functions import findCollisionsLoop, findHashCollisions
 
 
 def universalHash(m, bytelen=20):
@@ -75,3 +75,8 @@ if __name__ == "__main__":
 
     print(f"Original message: {m}")
     print(f"Recovered message: {m_prime}")
+
+    # Producing collision for 20-bytes long sequence
+    x1, x2 = findHashCollisions(universalHash, 20)
+
+    print(f"Colliding messages for universal hash:\n> {x1}\n> {x2}")
