@@ -73,10 +73,21 @@ if __name__ == "__main__":
     m = b"Hello, world!"
     m_prime = findPremimage(universalHash(m))
 
+    print("\n-> Finding preimages: ")
     print(f"Original message: {m}")
     print(f"Recovered message: {m_prime}")
 
     # Producing collision for 20-bytes long sequence
-    x1, x2 = findHashCollisions(universalHash, 20)
+    msg_orig = b"This is the original message"
+    q = qDSA
 
-    print(f"Colliding messages for universal hash:\n> {x1}\n> {x2}")
+    int_msg_orig = int.from_bytes(msg_orig, byteorder="big")  # This corresponds to 'm'
+    int_msg_coll = int_msg_orig + q
+
+    msg_coll = int_msg_coll.to_bytes(
+        int_msg_coll.bit_length() // 8 + 1, byteorder="big"
+    )
+
+    assert universalHash(msg_orig) == universalHash(msg_coll)
+
+    print(f"\n-> Colliding messages for universal hash:\n> {msg_orig}\n> {msg_coll}")
