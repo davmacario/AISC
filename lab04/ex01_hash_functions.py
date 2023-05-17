@@ -58,17 +58,7 @@ def findHashCollisions(hash_func, hash_size_bytes, counts=False, verb=False):
         return x1, x2
 
 
-if __name__ == "__main__":
-    msg = b"hello"
-
-    # print(f"SHA-256 digest:\n{sha256Encrypt(msg)}")
-
-    x1, x2 = findHashCollisions(sha256Encrypt, 4, verb=True)
-
-    print(f"Hash of {x1}:\n{sha256Encrypt(x1, 4)}")
-    print("")
-    print(f"Hash of {x2}:\n{sha256Encrypt(x2, 4)}")
-
+def findCollisionsLoop(H):
     # Repeat the experiment for 10 times for each output length in bytes
     byte_len = [1, 2, 3, 4]
     iterations = 10
@@ -82,7 +72,7 @@ if __name__ == "__main__":
         sublist1 = []
         sublist2 = []
         for i in range(iterations):
-            x1, x2, c1, c2 = findHashCollisions(sha256Encrypt, b, counts=True)
+            x1, x2, c1, c2 = findHashCollisions(H, b, counts=True)
             sublist1.append(c1)
             sublist2.append(c2)
 
@@ -91,3 +81,17 @@ if __name__ == "__main__":
 
         print(f"Loop 1: {sum(sublist1)/len(sublist1)}")
         print(f"Loop 2: {sum(sublist2)/len(sublist2)}")
+
+
+if __name__ == "__main__":
+    msg = b"hello"
+
+    # print(f"SHA-256 digest:\n{sha256Encrypt(msg)}")
+
+    x1, x2 = findHashCollisions(sha256Encrypt, 4, verb=True)
+
+    print(f"Hash of {x1}:\n{sha256Encrypt(x1, 4)}")
+    print("")
+    print(f"Hash of {x2}:\n{sha256Encrypt(x2, 4)}")
+
+    findCollisionsLoop(sha256Encrypt)
