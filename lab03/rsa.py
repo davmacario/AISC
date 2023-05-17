@@ -94,23 +94,13 @@ def get_p_q_N(keylen):
     return p, q, N
 
 
-def main(prnt=False):
-    # Adjust position
-    path = "/".join(__file__.split("/")[:-1])
-
-    # Red input file
-    input_file = os.path.join(path, "text.txt")
-
-    with open(input_file, "r") as f:
-        plaintext = f.read()  # String
-
-    pt_len = len(plaintext)
-
-    # Evaluate p, q, N
-    t_0 = time.time()
-
-    security_param = 1024  # Number of bits of N
-    p, q, N = get_p_q_N(security_param)
+def keygen_rsa(keylen):
+    """
+    keygen_rsa
+    ---
+    Generate the keys for RSA given a security parameter
+    """
+    p, q, N = get_p_q_N(keylen)
 
     # assert N.bit_length() == security_param, f"N has {N.bit_length()}!"
 
@@ -127,21 +117,83 @@ def main(prnt=False):
             found = True
             d = x % totient
 
-    t_keygen = time.time() - t_0
+    return N, e, d
 
-    if prnt:
-        print(f"p: {p}\nq: {q}\nN: {N}")
-        print("\n")
 
-    out_pub = os.path.join(path, "rsa_pub.txt")
-    out_private = os.path.join(path, "rsa_pri.txt")
+def retrieveKeys(path_program):
+    """
+    retrieveKeys
+    ---
+    If available, read files "rsa_pri.txt", "rsa_pub.txt".
+    """
+    # If possible, try opening the txt file containing an already generated pair (generation is random...)
+    try:
+        try:
+            f = open("dh_keys.txt", "r")
+        except:
+            f = open("lab03/dh_keys.txt")
 
-    # Store them on files
-    with open(out_pub, "w") as f:
-        f.write("e: " + str(e) + "\nN: " + str(N))
+        # Read first file
+        with open(os.path.join(path_program, "rsa_pri.txt")) as f:
+            d = int(f.readline().split(" ")[-1].split("\n")[0])
+            N_1 = int(f.readline().split(" ")[-1].split("\n")[0])
+            f.close()
 
-    with open(out_private, "w") as f:
-        f.write("d: " + str(d) + "\nN: " + str(N))
+        # Read second file
+        with open(os.path.join(path_program, "rsa_pub.txt")) as f:
+            e = int(f.readline().split(" ")[-1].split("\n")[0])
+            N_2 = int(f.readline().split(" ")[-1].split("\n")[0])
+            f.close()
+
+        if N_1 == N_2:
+            print("Keys retrieved!")
+
+            return N_1, e, d
+        else:
+            print("The values of N don't match!")
+            raise ValueError("The values of N don't match!")
+    except:
+        return None
+
+
+def main(input_path, prnt=False):
+    # Adjust position
+    path = "/".join(__file__.split("/")[:-1])
+
+    # Red input file
+    input_file = os.path.join(path, input_path)
+
+    with open(input_file, "r") as f:
+        plaintext = f.read()  # String
+
+    pt_len = len(plaintext)
+
+    tmp = retrieveKeys(path)
+    if tmp is None:
+        # Evaluate p, q, N
+        security_param = 1024  # Number of bits of N
+
+        t_0 = time.time()
+
+        N, e, d = keygen_rsa(security_param)
+
+        t_keygen = time.time() - t_0
+
+        out_pub = os.path.join(path, "rsa_pub.txt")
+        out_private = os.path.join(path, "rsa_pri.txt")
+
+        # Store them on files
+        with open(out_pub, "w") as f:
+            f.write("e: " + str(e) + "\nN: " + str(N))
+
+        with open(out_private, "w") as f:
+            f.write("d: " + str(d) + "\nN: " + str(N))
+    else:
+        N = tmp[0]
+        e = tmp[1]
+        d = tmp[2]
+
+        t_keygen = 0
 
     # Map the plaintext onto the message space
     bitlen = N.bit_length()
@@ -155,6 +207,10 @@ def main(prnt=False):
 
     if prnt:
         print("Cphertext: ", cipher)
+
+    out_cipher = os.path.join(path, "text_encrypted.txt")
+    with open(out_cipher, "w") as f:
+        f.write("\n".join([str(it) for it in cipher]))
 
     t_2 = time.time()
 
@@ -173,4 +229,4 @@ def main(prnt=False):
 
 
 if __name__ == "__main__":
-    main(prnt=False)
+    main("text.txt", prnt=False)
