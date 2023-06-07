@@ -1,7 +1,5 @@
-from AISC_03 import*
+from AISC_03 import *
 from random import randint
-
-
 
 
 def egcd(a, b):
@@ -9,9 +7,6 @@ def egcd(a, b):
         return b, 0, 1
     g, x, y = egcd(b % a, a)
     return g, y - (b // a) * x, x
-
-
-
 
 
 def miller_rabin(p, k=100):
@@ -38,11 +33,8 @@ def miller_rabin(p, k=100):
     return True
 
 
-
-
-
 def main():
-    N = 84679728665601623534964724907925515929006540043189517481604602443064696359792213876789134073333039587280256381629121330309212710075084136072434602842735932397920567074126295940793758270599694063151970957022891161811181118800418280560581409959172714364916927401331291518944188508877716559336163266657183044021    
+    N = 84679728665601623534964724907925515929006540043189517481604602443064696359792213876789134073333039587280256381629121330309212710075084136072434602842735932397920567074126295940793758270599694063151970957022891161811181118800418280560581409959172714364916927401331291518944188508877716559336163266657183044021
     e = 65537
     s = "This group is composed by Stefano Agnetta, Umberto Brozzo Doda nad Davide Macario"
 
@@ -53,42 +45,51 @@ def main():
     c = pow(m[0], e, N)
     print("c: ", c)
 
-    print(miller_rabin(110726941258106613165182448269850102236786629354458149980228894972416575667359))
-    print(miller_rabin(81116712346948063995695516399923130132965396377321265571871460960105500481321))
+    # Test primality-checking function
+    print(
+        miller_rabin(
+            110726941258106613165182448269850102236786629354458149980228894972416575667359
+        )
+    )
+    print(
+        miller_rabin(
+            81116712346948063995695516399923130132965396377321265571871460960105500481321
+        )
+    )
 
     keylen = 1024
 
     found = False
     while found == False:
-        p = generate_prime_candidate(keylen//2)
+        p = generate_prime_candidate(keylen // 2)
         found = miller_rabin(p)
     found = False
     while found == False:
-        q = generate_prime_candidate(keylen//2)
+        q = generate_prime_candidate(keylen // 2)
         found = miller_rabin(q)
-    
-    N = p*q
+
+    N = p * q
 
     try:
         assert N.bit_length() == keylen
     except AssertionError:
-        print('N generation error:')
-        print('size of N is', N.bit_length(), 'bits instead of', keylen)
+        print("N generation error:")
+        print("size of N is", N.bit_length(), "bits instead of", keylen)
         sys.exit(1)
 
     print("p: ", p)
     print("q: ", q)
     print("N: ", N)
 
-    phi = (p-1)*(q-1)
+    phi = (p - 1) * (q - 1)
 
-    M = 2^16 + 1
+    M = 2 ^ 16 + 1
 
     found = False
     while found == False:
-        e = randint(2, M)
+        e = randint(3, M)
         g, x, y = egcd(e, phi)
-        if g==1:
+        if g == 1:
             found = True
         else:
             found = False
@@ -109,8 +110,5 @@ def main():
     print("s: ", s)
 
 
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
