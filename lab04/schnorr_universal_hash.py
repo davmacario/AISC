@@ -104,7 +104,7 @@ if __name__ == "__main__":
     I_cat_myMsg = I_bytes + my_msg
     print(I_cat_myMsg)
     int_I_cat_myMsg = int.from_bytes(I_cat_myMsg, byteorder="big")
-    int_I_cat_myMsg_transl = int_I_cat_myMsg << 20
+    int_I_cat_myMsg_transl = int_I_cat_myMsg << (20 * 8)
     I_cat_myMsg_transl = int_I_cat_myMsg_transl.to_bytes(
         getByteLen(int_I_cat_myMsg_transl), byteorder="big"
     )
