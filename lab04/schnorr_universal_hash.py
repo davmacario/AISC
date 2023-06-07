@@ -2,7 +2,7 @@ import hashlib
 import os
 import secrets
 
-from AISC_04 import qDSA, pDSA, gDSA, aU, bU
+from AISC_04 import qDSA, pDSA, gDSA, aU, bU, modinv
 from universal_hash import universalHash, findPremimage
 
 
@@ -96,8 +96,38 @@ if __name__ == "__main__":
 
     print(I_cat_msg)
 
-    r_bytes = r.to_bytes(20, byteorder="big")
-    pre_I_cat_message = findPremimage(r_bytes)
+    r1 = r
+    r1_bytes = r.to_bytes(20, byteorder="big")
+
+    my_msg = b"This is my malicious message"
+    my_msg_int = int.from_bytes(my_msg, byteorder="big")
+    I_cat_myMsg = I_bytes + my_msg
+    print(I_cat_myMsg)
+    int_I_cat_myMsg = int.from_bytes(I_cat_myMsg, byteorder="big")
+    int_I_cat_myMsg_transl = int_I_cat_myMsg << 20
+    I_cat_myMsg_transl = int_I_cat_myMsg_transl.to_bytes(
+        getByteLen(int_I_cat_myMsg_transl), byteorder="big"
+    )
+
+    r2_byte = universalHash(I_cat_myMsg_transl)
+    r2 = int.from_bytes(r2_byte, byteorder="big")
+    inv_a = modinv(aU, qDSA)
+
+    offset = ((r1 - r2) * inv_a) % qDSA
+
+    fake_msg_int = int_I_cat_myMsg_transl + offset
+    fake_msg = fake_msg_int.to_bytes(getByteLen(fake_msg_int), byteorder="big")
+
+    print("")
+    print(r1_bytes)
+    print(universalHash(fake_msg))
+
+    #
+    #
+    #
+    #
+
+    pre_I_cat_message = findPremimage(r1_bytes)
     pre_I_int = int.from_bytes(pre_I_cat_message, byteorder="big")
 
     tmp = aU * pre_I_int + bU
