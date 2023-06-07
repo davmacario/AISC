@@ -122,6 +122,7 @@ if __name__ == "__main__":
 
     print("\n", actual_valid_msg)
 
-    assert verifySignature(
-        r, s, y, actual_valid_msg, universalHash
-    ), "Something went wrong"
+    out = verifySignature(r, s, y, actual_valid_msg, universalHash)
+    assert out, "Something went wrong"
+
+    print("Valid? ", out)
