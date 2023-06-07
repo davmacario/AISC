@@ -87,14 +87,10 @@ if __name__ == "__main__":
 
     # I can be found as for the verification
     I = (pow(g, s, p) * pow(y, r, p)) % p
-
-    # print(I)
-
     I_bytes = I.to_bytes(getByteLen(I), byteorder="big")
 
+    # Find the original hashed message for evaluating r
     I_cat_msg = I_bytes + m
-
-    print(I_cat_msg)
 
     r1 = r
     r1_bytes = r.to_bytes(20, byteorder="big")
@@ -102,48 +98,30 @@ if __name__ == "__main__":
     my_msg = b"This is my malicious message"
     my_msg_int = int.from_bytes(my_msg, byteorder="big")
     I_cat_myMsg = I_bytes + my_msg
-    print(I_cat_myMsg)
     int_I_cat_myMsg = int.from_bytes(I_cat_myMsg, byteorder="big")
+    # Translate message to make space for the offset (20 bytes as q)
     int_I_cat_myMsg_transl = int_I_cat_myMsg << (20 * 8)
     I_cat_myMsg_transl = int_I_cat_myMsg_transl.to_bytes(
         getByteLen(int_I_cat_myMsg_transl), byteorder="big"
     )
 
+    # Evaluate the
     r2_byte = universalHash(I_cat_myMsg_transl)
     r2 = int.from_bytes(r2_byte, byteorder="big")
     inv_a = modinv(aU, qDSA)
 
     offset = ((r1 - r2) * inv_a) % qDSA
 
-    fake_msg_int = int_I_cat_myMsg_transl + offset
-    fake_msg = fake_msg_int.to_bytes(getByteLen(fake_msg_int), byteorder="big")
+    fake_msg = I_bytes + my_msg + offset.to_bytes(getByteLen(offset), "big")
 
     print("")
     print(r1_bytes)
     print(universalHash(fake_msg))
 
-    #
-    #
-    #
-    #
+    actual_valid_msg = my_msg + offset.to_bytes(getByteLen(offset), "big")
 
-    pre_I_cat_message = findPremimage(r1_bytes)
-    pre_I_int = int.from_bytes(pre_I_cat_message, byteorder="big")
+    print("\n", actual_valid_msg)
 
-    tmp = aU * pre_I_int + bU
-    tmp = tmp & (2 ** (8 * len(m) + 1) - 1)
-    m_int = int.from_bytes(m, byteorder="big")
-    helpme = aU * m_int + bU
-
-    print("########")
-    print(tmp % qDSA)
-    print(helpme % qDSA)
-    print("########")
-
-    # Find I: remove the message from the preimage
-    n_bytes_m = len(m)
-    print(f"Length in bytes of m: {n_bytes_m}")
-
-    I = (pre_I_int - int.from_bytes(m, byteorder="big")) >> (len(m) * 8)
-
-    print(I)
+    assert verifySignature(
+        r, s, y, actual_valid_msg, universalHash
+    ), "Something went wrong"
