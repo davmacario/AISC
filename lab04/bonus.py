@@ -68,18 +68,13 @@ if __name__ == "__main__":
     x = secrets.randbelow(qDSA - 2) + 1
     y = pow(gDSA, x, pDSA)
 
+    m = b"This group is composed by Umberto Brozzo Doda, Davide Macario and Stefano Agnetta"
+    r, s = computeSignature(m, x, universalHash)
+    valid = verifySignature(r, s, y, m, universalHash)
+
     print("private key: ", x)
     print("public key: ", y)
-
-    m = b"This group is composed by Umberto Brozzo Doda, Davide Macario and Stefano Agnetta"
-
-    # r, s = computeSignature(m, x, universalHash)
-    r, s = computeSignature(m, x, myUniversalHash)
-
-    # valid = verifySignature(r, s, y, m, universalHash)
-    valid = verifySignature(r, s, y, m, myUniversalHash)
     print("message : ", m)
-
     print("r: ", r)
     print("s: ", s)
     print("Valid? ", valid)
@@ -101,27 +96,21 @@ if __name__ == "__main__":
     nbytes = (pDSA.bit_length() + 7) // 8
     Ibytes = I.to_bytes(nbytes, byteorder="big")
 
-
-
-    t1 = (aU*int.from_bytes(Ibytes+m, 'big')) % qDSA
-    t2 = (aU*int.from_bytes(Ibytes+m2, 'big')) % qDSA
-
-    print('t1: ',t1)
-    print('t2: ',t2)
-
+    t1 = (aU*int.from_bytes(Ibytes+m, 'big') + bU) % qDSA
+    t2 = (aU*int.from_bytes(Ibytes+m2, 'big') + bU) % qDSA
     t = (t1 - t2) % qDSA
-
     at = modinv(aU, qDSA)
-
     int_m2 = int_m2 + t*at
-
     m2 = int_m2.to_bytes(getByteLen(int_m2), 'big')
 
     t3 = (aU*int.from_bytes(Ibytes+m2, 'big')) % qDSA
+
+    print('t1: ',t1)
+    print('t2: ',t2)
     print('t3: ',t3)
 
-    # valid = verifySignature(r, s, y, m2, universalHash)
-    valid = verifySignature(r, s, y, m2, myUniversalHash)
+    valid = verifySignature(r, s, y, m2, universalHash)
+    
     print("Valid? ", valid)
 
 
