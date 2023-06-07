@@ -58,7 +58,7 @@ def findPremimage(h):
     h_int = int.from_bytes(h, byteorder="big")
     m = (((h_int - b) % q) * inv_a) % q
 
-    return m.to_bytes(m.bit_length() // 8 + 1, byteorder="big")
+    return m.to_bytes((m.bit_length() + 7) // 8, byteorder="big")
 
 
 if __name__ == "__main__":
@@ -72,6 +72,8 @@ if __name__ == "__main__":
     # Finding preimages
     m = b"Hello, world!"
     m_prime = findPremimage(universalHash(m))
+
+    assert universalHash(m) == universalHash(m_prime)
 
     print("\n-> Finding preimages: ")
     print(f"Original message: {m}")
