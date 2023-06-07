@@ -10,11 +10,12 @@ from cryptography.hazmat.primitives import serialization
 
 
 # select hostname to connect to
-hostname = "www.python.org"
+# hostname = "www.python.org"
 # hostname = 'www.google.com'
-# hostname = "www.didattica.polito.it"
+hostname = "www.didattica.polito.it"
 # hostname = 'localhost'
 # hostname = '127.0.0.1'
+# hostname = "www.ietf.org"
 
 # port number is 443 for HTTPS, use 5000 only for localhost server
 portnumber = 443
@@ -38,11 +39,11 @@ context.minimum_version = ssl.TLSVersion.TLSv1
 # context.minimum_version = ssl.TLSVersion.TLSv1_3
 
 # context.maximum_version = ssl.TLSVersion.TLSv1
-# context.maximum_version = ssl.TLSVersion.TLSv1_2
-context.maximum_version = ssl.TLSVersion.TLSv1_3
+context.maximum_version = ssl.TLSVersion.TLSv1_2
+# context.maximum_version = ssl.TLSVersion.TLSv1_3
 
 # uncomment this to remove ECDHE from offered cipher suites
-# context.set_ciphers('RSA:!ECDHE')
+context.set_ciphers("RSA:!ECDHE")
 ciphers = context.get_ciphers()
 
 
