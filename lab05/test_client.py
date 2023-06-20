@@ -12,14 +12,14 @@ from cryptography.hazmat.primitives import serialization
 # select hostname to connect to
 # hostname = "www.python.org"
 # hostname = 'www.google.com'
-hostname = "www.didattica.polito.it"
+# hostname = "www.didattica.polito.it"
 # hostname = 'localhost'
-# hostname = '127.0.0.1'
+hostname = "127.0.0.1"
 # hostname = "www.ietf.org"
 
 # port number is 443 for HTTPS, use 5000 only for localhost server
-portnumber = 443
-# portnumber = 5000
+# portnumber = 443
+portnumber = 5000
 
 
 context = ssl.SSLContext(ssl.PROTOCOL_TLS)
@@ -30,16 +30,16 @@ context.load_default_certs()
 # this is not the recommended way of using ssl module for a client
 # context.verify_mode = ssl.CERT_NONE
 # load a specific trusted certificate
-# context.load_verify_locations('cert_rsa_sha1.pem')
-# context.load_verify_locations('cert_ecdsa_sha256.pem')
+# context.load_verify_locations("cert_rsa_sha256.pem")
+context.load_verify_locations("cert_ecdsa_sha256.pem")
 
 # set the minimum and maximum TLS versions that the client will negotiate
 context.minimum_version = ssl.TLSVersion.TLSv1
 # context.minimum_version = ssl.TLSVersion.TLSv1_2
 # context.minimum_version = ssl.TLSVersion.TLSv1_3
 
-# context.maximum_version = ssl.TLSVersion.TLSv1
-context.maximum_version = ssl.TLSVersion.TLSv1_2
+context.maximum_version = ssl.TLSVersion.TLSv1
+# context.maximum_version = ssl.TLSVersion.TLSv1_2
 # context.maximum_version = ssl.TLSVersion.TLSv1_3
 
 # uncomment this to remove ECDHE from offered cipher suites
